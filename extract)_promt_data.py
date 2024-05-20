@@ -14,17 +14,30 @@ def insert_to_the_table(df):
     try:
         cur = conn.cursor()
         
+        print("Columns in DataFrame:")
+        print(df.columns)
+        
+        print("DataFrame head:")
+        print(df.head())
+
         for index, row in df.iterrows():
             app = row['Application']
             
-            cur.execute("SELECT name FROM jerish.projects WHERE name = %s", (app,))
+            # Check if the project exists in the database
+            cur.execute("SELECT id FROM jerish.prompts WHERE name = %s", (app,))
             existing_record = cur.fetchone()
             if existing_record:
                 print(f"Skipping duplicate record: {app}")
                 continue
             
-            query = "INSERT INTO jerish.projects(name) VALUES (%s)"
+            # Insert project into jerish.prompts table
+            query = "INSERT INTO jerish.prompts(name) VALUES (%s) RETURNING id"
             cur.execute(query, (app,))
+            project_id = cur.fetchone()[0]
+            
+            # Insert project_id into the dataframe
+            df.at[index, 'project_id'] = project_id
+        
         conn.commit()
     except Exception as e:
         print("Error while inserting into table!")

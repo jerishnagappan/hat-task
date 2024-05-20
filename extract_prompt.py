@@ -10,7 +10,7 @@ db_conn = {
     }
 conn = pg.connect(**db_conn)
 
-def get_prompt_id():
+def get_project_id():
     query= "select id,name from jerish.projects"
     df = pd.read_sql_query(query,conn)
 
@@ -30,8 +30,8 @@ def insert_to_the_table(df):
         # df.drop_duplicates(subset=['prompt'], inplace=True)
         for index, row in df.iterrows():
 
-            query = f"INSERT INTO jerish.versions(prompt_id,prompt_text) VALUES (%s,%s)"
-            cur.execute(query, (row['id'],row['Prompt'],))
+            query = f"INSERT INTO jerish.prompts(project_id,name) VALUES (%s,%s)"
+            cur.execute(query, (row['id'],row['Application'],))
         conn.commit()
         print("Data inserted successfully.")
     except Exception as e:
@@ -51,7 +51,7 @@ def get_data_from_excel():
 
 try:
     df1 = get_data_from_excel()
-    df2 = get_prompt_id()
+    df2 = get_project_id()
     print(df1.columns)
     print(df2.columns)
 
