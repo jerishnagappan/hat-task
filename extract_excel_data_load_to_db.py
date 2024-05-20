@@ -17,7 +17,6 @@ def get_prompt_id():
     return df
 
 def insert_to_the_table(df):
-
     try:
         cur = conn.cursor()
         
@@ -40,6 +39,9 @@ def insert_to_the_table(df):
     finally:
         cur.close()
         conn.close()
+    def get_project_id():
+      query= "select id,name from jerish.projects"
+      df = pd.read_sql_query(query,conn)    
 
 def get_data_from_excel():
     excel_file = '/Users/jerish.nagappan/Documents/Training/Prompt_Store.xlsx'
